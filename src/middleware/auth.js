@@ -32,7 +32,11 @@ export default async function authenticateToken(req, res, next) {
     console.log('decrypted', decrypted.payload.toString());
 
     const result = await JWS.createVerify(keystore, {}).verify(decrypted.payload.toString());
-    req.user = JSON.parse(result.payload.toString());
+    const userInfo = JSON.parse(result.payload.toString());
+    if (Date.now() >= userInfo.exp * 1000) {
+      res.sendStatus(401)
+    }
+    req.user = userInfo;
     next();
   } catch(e) {
     console.log(e)

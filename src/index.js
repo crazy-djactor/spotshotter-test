@@ -20,9 +20,9 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.text());
 
+
 app.set("view engine", "pug");
 app.set('views', path.join(getRootPath(), 'src', 'views'));
-
 
 
 // TASK 3: implement authentication middleware
@@ -58,15 +58,14 @@ app.set('views', path.join(getRootPath(), 'src', 'views'));
 // The token should be passed in Authorization header using Bearer scheme.
 
 
-
 app.get('/', authenticateToken, (req, res) => {
   // TASK 3+: instead of "Hello World!", return the name of the authenticated user.
   console.log(req.user)
-  res.send(req.user.name);
+  res.send({'name': req.user.name});
 });
 
 
-app.post('/spiral-matrix', upload.single("uploadfile"), (req, res) => {
+app.post('/spiral-matrix', upload.single("csv_file"), (req, res) => {
   // TASK 1: given an (M x N) matrix of numbers POSTed as CSV,
   // return an array of size M * N (as CSV) that holds the
   // matrix elements in the order of a spiral starting in
@@ -80,21 +79,26 @@ app.post('/spiral-matrix', upload.single("uploadfile"), (req, res) => {
   // Produce the following output:
   // 1,2,3,4,5,6,7,8,9,10,11,12
 
-  const filePath = path.join(path.dirname(__dirname), 'uploads', req.file.filename);
-  console.log('mid filepath', filePath)
-  let stream = fs.createReadStream(filePath);
-  let csvData = [];
-  let csvStream = csv
-    .parse()
-    .on("data", function (data) {
-      csvData.push(data);
-    })
-    .on("end", function () {
-      const spiralMatrix = makeSpiral(csvData);
-      fs.unlinkSync(filePath)
-      res.send(spiralMatrix)
-    });
-  stream.pipe(csvStream);
+  try {
+    const filePath = path.join(getRootPath(), 'uploads', req.file.filename);
+    console.log('mid filepath', filePath)
+    let stream = fs.createReadStream(filePath);
+    let csvData = [];
+    let csvStream = csv
+      .parse()
+      .on("data", function (data) {
+        csvData.push(data);
+      })
+      .on("end", function () {
+
+        const spiralMatrix = makeSpiral(csvData);
+        fs.unlinkSync(filePath)
+        res.send(spiralMatrix)
+      });
+    stream.pipe(csvStream);
+  } catch (e) {
+    res.sendStatus(400)
+  }
 });
 
 app.get('/random-duck', (req, res) => {
@@ -104,6 +108,8 @@ app.get('/random-duck', (req, res) => {
   axios.get('https://random-d.uk/api/random').then(response => {
     console.log(response.data);
     res.render('random-duck', response.data);
+  }).catch(err => {
+    res.sendStatus(400);
   })
 });
 
