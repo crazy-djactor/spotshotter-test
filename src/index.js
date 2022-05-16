@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csv from 'fast-csv';
 import * as fs from "fs";
-import {makeSpiral} from "./util/util.js";
+import {getRootPath, makeSpiral} from "./util/util.js";
 import authenticateToken, {installKeystore} from "./middleware/auth.js";
 import axios from 'axios';
 import pug from 'pug'
@@ -11,9 +11,6 @@ import {upload} from "./middleware/upload.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
@@ -23,8 +20,10 @@ app.options('*', cors());
 app.use(cors());
 app.use(cookieParser());
 app.use(express.text());
+
 app.set("view engine", "pug");
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(getRootPath(), 'src', 'views'));
+
 await installKeystore();
 
 // TASK 3: implement authentication middleware
