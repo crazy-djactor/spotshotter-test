@@ -3,14 +3,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csv from 'fast-csv';
 import * as fs from "fs";
-import {getRootPath, makeSpiral} from "./util/util.js";
-import authenticateToken, {installKeystore} from "./middleware/auth.js";
+import path from 'path';
 import axios from 'axios';
 import pug from 'pug'
-import {upload} from "./middleware/upload.js";
-import path from 'path';
-import { fileURLToPath } from 'url';
 
+import {upload} from "./middleware/upload.js";
+import {getRootPath, makeSpiral} from "./util/util.js";
+import authenticateToken, {installKeystore} from "./middleware/auth.js";
 
 const app = express();
 const port = 3000;
