@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "0698a234-9683-4901-9c37-538e429be41f",
+		"name": "spotshotter-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "index",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImN0eSI6IkpXVCIsImVwayI6eyJ4IjoiN0JsdFJsR3ZYeXZuSXl6UmVMdEc4MWgtbFBKNjdpR0YzYWZRX25xUGJNNCIsImNydiI6IlAtMjU2Iiwia3R5IjoiRUMiLCJ5IjoicE5qRm1Nc1UwQXVVa0picW5Kb1VrNXpXaENfV3ZlTDlZR0RkZ2JKVUpubyJ9fQ..tJ0uB75Gt1DdmvW8.2_uHWNintOHaoF8SNy2p04yqOeuDuA6gzeJaeKjfsj2kyaUm7W-Y2ZaOFkx6KOI5DTXlhQelLnQw5o_VIYW5yogCN5kDWXYO3e0G8Ha_9xpF1byZxHFIfhLPpCm4IMpNxHJriwiFWi9enfdJAuhnWcinmnR2ulAXzH56-yueH8jq9x76Fcc2LfQsxndhA3qgAizxsgaoACkoFj8uVS33Coa7S8K_sC-4j9gBvoupDPRhvcweSl8OkwX_VWwsMvfBw0si4zfVcmw38K70IHEdaRT0uYvT6qwdwtyJTmJSnK70GuhnnsM4wXPwzmThh_Z3dpwy5_i2_fD_pnK0JnuwbFYgdZBw-D2tEZxJsaNeyNE.E6S2uOOy58KCQlWiL5JRUg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "spiral-matrix",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "csv_file",
+							"type": "file",
+							"src": "/home/djactor/Documents/test.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/spiral-matrix",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spiral-matrix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "random-duck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:3000/random-duck",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"random-duck"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
