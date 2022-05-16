@@ -24,7 +24,7 @@ app.use(express.text());
 app.set("view engine", "pug");
 app.set('views', path.join(getRootPath(), 'src', 'views'));
 
-await installKeystore();
+
 
 // TASK 3: implement authentication middleware
 //
@@ -108,8 +108,10 @@ app.get('/random-duck', (req, res) => {
   })
 });
 
-app.listen(port, () => {
-  console.log(`API listening at http://localhost:${port}`);
-});
-
+installKeystore().then(() => {
+  app.listen(port, () => {
+    console.log(`API listening at http://localhost:${port}`);
+  });
+})
 console.log('init');
+
