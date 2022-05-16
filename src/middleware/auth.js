@@ -1,21 +1,24 @@
 import jose from 'node-jose';
-
-// const jwt = require('jsonwebtoken');
+import {getRootPath} from "../util/util.js";
+import path from "path";
+import * as fs from "fs";
 
 const {JWE, JWK, JWS} = jose;
 
-const _privKey = `-----BEGIN PRIVATE KEY-----
-  MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg0EW1+TE/xD/GAjVS
-  UW79b0uzB0IS6NbYziaxHWbOJsqhRANCAAQCS16t6OeaTLhGBJOLcQi28bHgD6nF
-  FZs26ml1mCJwujRCeXqCQMXrhMtb0fanf3UvJcuj4nBOBbkgGm7952MV
-  -----END PRIVATE KEY-----`;
-
-
-const _verifyKey = `-----BEGIN PUBLIC KEY-----
-  MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEG7jnk1jcVekyBpcI1UvlDrB3R6qWkMd7
-  fJ7snYp3lDoXqFNDLYdovbIOt3riWtBSt2huVTMO37N829DFS1/8xBzOpgCtSYGQ
-  v1yjqVwpQYaT6xLL9c0gJ1bYR60DYobd
-  -----END PUBLIC KEY-----`
+const keystore = JWK.createKeyStore();
+export async function installKeystore() {
+  const rootPath = getRootPath();
+  const privKeyPath = path.join(rootPath, 'private.pem');
+  const signKeyPath = path.join(rootPath, 'sign.pem');
+  const privKey = fs.readFileSync(privKeyPath);
+  const signKey = fs.readFileSync(signKeyPath);
+  const jwKeys = await Promise.all([
+    JWK.asKey(privKey, "pem"),
+    JWK.asKey(signKey, "pem")
+  ]);
+  await keystore.add(jwKeys[0]);
+  await keystore.add(jwKeys[1]);
+}
 
 
 export default async function authenticateToken(req, res, next) {
@@ -24,19 +27,11 @@ export default async function authenticateToken(req, res, next) {
 
   if (token == null) return res.sendStatus(401)
 
-
   try {
-    const jwKeys = await Promise.all([
-      JWK.asKey(_privKey, "pem"),
-      JWK.asKey(_verifyKey, "pem")
-    ]);
-    const privKey = jwKeys[0]
-    const verifyKey = jwKeys[1];
-
-    const decrypted = await JWE.createDecrypt(privKey).decrypt(token)
+    const decrypted = await JWE.createDecrypt(keystore).decrypt(token)
     console.log('decrypted', decrypted.payload.toString());
 
-    const result = await JWS.createVerify(verifyKey).verify(decrypted.payload.toString());
+    const result = await JWS.createVerify(keystore, {}).verify(decrypted.payload.toString());
     req.user = JSON.parse(result.payload.toString());
     next();
   } catch(e) {

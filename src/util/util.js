@@ -1,3 +1,11 @@
+import path from "path";
+import {fileURLToPath} from "url";
+
+export function getRootPath() {
+  const __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+  return path.dirname(__dirname);
+}
+
 export function makeSpiral(sourceMatrix) {
   const M = sourceMatrix.length;
   if (M === 0) {

@@ -4,7 +4,7 @@ import cors from 'cors';
 import csv from 'fast-csv';
 import * as fs from "fs";
 import {makeSpiral} from "./util/util.js";
-import authenticateToken from "./middleware/auth.js";
+import authenticateToken, {installKeystore} from "./middleware/auth.js";
 import axios from 'axios';
 import pug from 'pug'
 import {upload} from "./middleware/upload.js";
@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use(express.text());
 app.set("view engine", "pug");
 app.set('views', path.join(__dirname, 'views'));
+await installKeystore();
 
 // TASK 3: implement authentication middleware
 //
